@@ -1,170 +1,77 @@
-import { RootDrawerParamList } from '../types/navigation';
 import React from 'react';
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerContentComponentProps,
-} from '@react-navigation/drawer';
-import { View, Text, StyleSheet } from 'react-native';
+import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../types/navigation';
+import { MainTabNavigator } from './MainTabNavigator';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { SupportScreen } from '../screens/SupportScreen';
+import { CustomDrawerContent } from '../components/CustomDrawer';
 import { Icon } from '../components/Icon';
-import { HomeScreen } from '../screens/HomeScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
-import { OrdersScreen } from '../screens/OrdersScreen';
-import { ProductsStackNavigator } from './ProductsStackNavigator';
-
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
-const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
-  return (
-    <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContainer}>
-      <View style={styles.drawerHeader}>
-        <View style={styles.logoCircle}>
-          <Icon name="storefront" size={28} color="#2563eb" />
-        </View>
-        <Text style={styles.drawerTitle}>TechStore App</Text>
-        <Text style={styles.drawerSubtitle}>Drawer ➔ Tabs ➔ Stack</Text>
-      </View>
+const renderCustomDrawer = (props: DrawerContentComponentProps) => (
+  <CustomDrawerContent {...props} />
+);
 
-      <View style={styles.itemsContainer}>
-        <DrawerItemList {...props} />
-      </View>
+const MainTabsDrawerIcon = ({ color, size }: { color: string; size: number }) => (
+  <Icon name="ticket-confirmation-outline" color={color} size={size} />
+);
 
-      <View style={styles.drawerFooter}>
-        <Text style={styles.footerVersion}>Sesión 10: Navegación en React Native</Text>
-      </View>
-    </DrawerContentScrollView>
-  );
-};
+const SettingsDrawerIcon = ({ color, size }: { color: string; size: number }) => (
+  <Icon name="cog-outline" color={color} size={size} />
+);
+
+const SupportDrawerIcon = ({ color, size }: { color: string; size: number }) => (
+  <Icon name="help-circle-outline" color={color} size={size} />
+);
 
 export const RootDrawerNavigator: React.FC = () => {
-    return <Drawer.Navigator
-        initialRouteName="Inicio"
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+  return (
+    <Drawer.Navigator
+      initialRouteName="MainTabs"
+      drawerContent={renderCustomDrawer}
       screenOptions={{
         headerShown: false,
-        drawerPosition: 'left',
-        drawerActiveTintColor: '#2563eb',
-        drawerInactiveTintColor: '#475569',
-        drawerActiveBackgroundColor: '#eff6ff',
+        drawerActiveTintColor: '#A29BFE',
+        drawerInactiveTintColor: '#A0A0B2',
+        drawerActiveBackgroundColor: '#2A2A3D',
+        drawerStyle: {
+          width: 280,
+          backgroundColor: '#1E1E2C',
+        },
         drawerLabelStyle: {
           fontSize: 14,
           fontWeight: '600',
           marginLeft: -10,
         },
-        drawerItemStyle: {
-          borderRadius: 10,
-          paddingHorizontal: 8,
-          marginVertical: 4,
-        },
       }}
     >
-        <Drawer.Screen
-        name="Inicio"
-        component={HomeScreen}
+      <Drawer.Screen
+        name="MainTabs"
+        component={MainTabNavigator}
         options={{
-          drawerLabel: 'Inicio',
-          drawerIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? 'home' : 'home-outline'}
-              size={22}
-              color={color}
-            />
-          ),
+          drawerLabel: 'Inicio / Eventos',
+          drawerIcon: MainTabsDrawerIcon,
         }}
       />
       <Drawer.Screen
-        name="Productos"
-        component={ProductsStackNavigator}
+        name="Settings"
+        component={SettingsScreen}
         options={{
-          drawerLabel: 'Productos',
-          drawerIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? 'bag-handle' : 'bag-handle-outline'}
-              size={22}
-              color={color}
-            />
-          ),
+          drawerLabel: 'Ajustes',
+          drawerIcon: SettingsDrawerIcon,
         }}
       />
       <Drawer.Screen
-        name="Pedidos"
-        component={OrdersScreen}
+        name="Support"
+        component={SupportScreen}
         options={{
-          drawerLabel: 'Pedidos',
-          drawerIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? 'receipt' : 'receipt-outline'}
-              size={22}
-              color={color}
-            />
-          ),
+          drawerLabel: 'Ayuda y Soporte',
+          drawerIcon: SupportDrawerIcon,
         }}
       />
-      <Drawer.Screen
-        name="Perfil"
-        component={ProfileScreen}
-        options={{
-          drawerLabel: 'Perfil',
-          drawerIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? 'person' : 'person-outline'}
-              size={22}
-              color={color}
-            />
-          ),
-        }}
-      />
-
     </Drawer.Navigator>
-}
-
-const styles = StyleSheet.create({
-  drawerContainer: {
-    flex: 1,
-    paddingTop: 0,
-  },
-  drawerHeader: {
-    backgroundColor: '#f8fafc',
-    padding: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-    marginBottom: 12,
-  },
-  logoCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: '#eff6ff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  drawerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#0f172a',
-  },
-  drawerSubtitle: {
-    fontSize: 12,
-    color: '#64748b',
-    marginTop: 2,
-  },
-  itemsContainer: {
-    flex: 1,
-    paddingHorizontal: 12,
-  },
-  drawerFooter: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
-  },
-  footerVersion: {
-    fontSize: 11,
-    color: '#94a3b8',
-    textAlign: 'center',
-  },
-});
+  );
+};
 
 export default RootDrawerNavigator;

@@ -2,97 +2,70 @@ import React from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
+  Image,
+  SafeAreaView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, DrawerActions, NavigationProp } from '@react-navigation/native';
-import { PRODUCTS, Product } from '../data/products';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { MainTabParamList, EventItem } from '../types/navigation';
+import { MOCK_EVENTS } from '../data/events';
 import { Icon } from '../components/Icon';
-import { ProductsStackParamList } from '../types/navigation';
 
-export const FavoritesScreen: React.FC = () => {
-  const navigation = useNavigation<NavigationProp<ProductsStackParamList>>();
-  const favoriteProducts = PRODUCTS.filter((item) => item.isFavorite);
+type Props = BottomTabScreenProps<MainTabParamList, 'FavoritesTab'>;
 
-  const getProductIcon = (category: string) => {
-    switch (category) {
-      case 'Smartphones':
-        return 'phone-portrait-outline';
-      case 'Laptops':
-        return 'laptop-outline';
-      case 'Audio':
-        return 'headset-outline';
-      case 'Accesorios':
-        return 'watch-outline';
-      default:
-        return 'cube-outline';
-    }
-  };
+export const FavoritesScreen: React.FC<Props> = ({ navigation }) => {
+  // Simular los dos primeros eventos como favoritos
+  const favoriteEvents = MOCK_EVENTS.slice(0, 2);
 
-  const renderProduct = ({ item }: { item: Product }) => (
-    <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      onPress={() => navigation.navigate('ProductDetail', { product: item })}
-    >
-      <View style={[styles.imageContainer, { backgroundColor: item.color + '15' }]}>
-        <Icon name={getProductIcon(item.category)} size={38} color={item.color} />
-      </View>
-
-      <View style={styles.info}>
-        <View style={styles.categoryRow}>
-          <Text style={styles.categoryText}>{item.category.toUpperCase()}</Text>
-          <Icon name="heart" size={18} color="#ec4899" />
+  const renderFavoriteItem = ({ item }: { item: EventItem }) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.image }} style={styles.cardImage} />
+      <View style={styles.cardContent}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.categoryText}>{item.category}</Text>
+          <Icon name="heart" size={20} color="#E63946" />
         </View>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>${item.price.toLocaleString()}</Text>
-      </View>
 
-      <View style={styles.arrowBox}>
-        <Icon name="chevron-forward-outline" size={20} color="#94a3b8" />
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <Text style={styles.cardDate}>📅 {item.date}</Text>
+        <Text style={styles.cardPrice}>S/ {item.price.toFixed(2)}</Text>
+
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => {
+            // Navegar al stack de eventos -> Detalle
+            navigation.navigate('EventsTab', {
+              screen: 'EventDetail',
+              params: { event: item },
+            });
+          }}
+        >
+          <Text style={styles.actionButtonText}>Ver Evento</Text>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header con icono (izq) y Drawer (der) */}
+      {/* Header */}
       <View style={styles.header}>
-        <View style={styles.leftContainer}>
-          <View style={[styles.logoBadge, { backgroundColor: '#fdf2f8' }]}>
-            <Icon name="heart" size={20} color="#ec4899" />
-          </View>
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Mis Favoritos</Text>
-            <Text style={styles.headerSubtitle}>
-              {favoriteProducts.length} productos guardados
-            </Text>
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-        >
-          <Icon name="menu-outline" size={24} color="#0f172a" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Banner explicativo */}
-      <View style={styles.teachingBanner}>
-        <Text style={styles.teachingTitle}>💖 Pestaña de Favoritos (Bottom Tab):</Text>
-        <Text style={styles.teachingDesc}>
-          Comparte el mismo <Text style={styles.bold}>Stack Navigator</Text> que la pestaña Todos. Tocar un producto favorito también abre su detalle.
-        </Text>
+        <Text style={styles.headerTitle}>Mis Favoritos</Text>
       </View>
 
       <FlatList
-        data={favoriteProducts}
+        data={favoriteEvents}
         keyExtractor={(item) => item.id}
-        renderItem={renderProduct}
-        contentContainerStyle={styles.list}
+        renderItem={renderFavoriteItem}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Icon name="heart-outline" size={48} color="#B2BEC3" />
+            <Text style={styles.emptyText}>No tienes eventos guardados aún.</Text>
+          </View>
+        }
       />
     </SafeAreaView>
   );
@@ -101,135 +74,90 @@ export const FavoritesScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#F7F9FC',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
-  },
-  leftContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  logoBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-    flexShrink: 0,
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f1f5f9',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexShrink: 0,
-    marginRight: 8,
-  },
-  headerTitleContainer: {
-    flex: 1,
+    borderBottomColor: '#EBEFF5',
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#0f172a',
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    color: '#64748b',
-  },
-  badgeBanner: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  badgeText: {
-    color: '#ffffff',
-    fontSize: 10,
+    fontSize: 20,
     fontWeight: '800',
+    color: '#1E1E2C',
   },
-  teachingBanner: {
-    backgroundColor: '#fdf2f8',
-    margin: 16,
-    padding: 12,
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: '#ec4899',
-  },
-  teachingTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#be185d',
-  },
-  teachingDesc: {
-    fontSize: 11,
-    color: '#9d174d',
-    marginTop: 2,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  list: {
-    paddingHorizontal: 16,
-    gap: 12,
-    paddingBottom: 20,
+  listContent: {
+    padding: 16,
   },
   card: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    marginBottom: 14,
+    overflow: 'hidden',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
   },
-  imageContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+  cardImage: {
+    width: 110,
+    height: '100%',
   },
-  info: {
+  cardContent: {
     flex: 1,
+    padding: 12,
   },
-  categoryRow: {
+  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: 8,
+    alignItems: 'center',
+    marginBottom: 4,
   },
   categoryText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#3b82f6',
+    fontSize: 11,
+    color: '#6C5CE7',
+    fontWeight: '700',
   },
-  productName: {
+  cardTitle: {
     fontSize: 15,
-    fontWeight: 'bold',
-    color: '#0f172a',
-    marginTop: 2,
+    fontWeight: '700',
+    color: '#2D3436',
+    marginBottom: 4,
   },
-  productPrice: {
-    fontSize: 15,
+  cardDate: {
+    fontSize: 12,
+    color: '#636E72',
+    marginBottom: 6,
+  },
+  cardPrice: {
+    fontSize: 14,
     fontWeight: '800',
-    color: '#10b981',
-    marginTop: 2,
+    color: '#2D3436',
+    marginBottom: 8,
   },
-  arrowBox: {
-    paddingHorizontal: 4,
+  actionButton: {
+    backgroundColor: '#6C5CE7',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  actionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 60,
+  },
+  emptyText: {
+    color: '#636E72',
+    fontSize: 14,
+    marginTop: 12,
   },
 });
