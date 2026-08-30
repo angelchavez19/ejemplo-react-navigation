@@ -6,8 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { MainTabParamList, EventItem } from '../types/navigation';
 import { MOCK_EVENTS } from '../data/events';

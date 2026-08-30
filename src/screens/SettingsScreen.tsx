@@ -5,9 +5,9 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../types/navigation';
 import { Icon } from '../components/Icon';

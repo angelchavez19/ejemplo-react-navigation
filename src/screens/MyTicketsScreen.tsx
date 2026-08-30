@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { TicketItem } from '../types/navigation';
 import { MOCK_MY_TICKETS } from '../data/events';
 import { Icon } from '../components/Icon';

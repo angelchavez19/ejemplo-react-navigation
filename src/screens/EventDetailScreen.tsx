@@ -6,8 +6,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { EventDetailProps } from '../types/navigation';
 import { Icon } from '../components/Icon';
 
