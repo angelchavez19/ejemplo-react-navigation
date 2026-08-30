@@ -65,11 +65,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           {/* Card Todos */}
           <TouchableOpacity
             style={[styles.quickCard, { borderColor: '#3b82f6' }]}
-            onPress={() => {}
-              // navigation.navigate('Productos', {
-              //   screen: 'ProductsTabs',
-              //   params: { screen: 'AllProductsTab' },
-              // })
+            onPress={() => 
+              navigation.navigate('Productos', {
+                screen: 'ProductsTabs',
+                params: { screen: 'AllProductsTab' },
+              })
             }
           >
             <View style={[styles.quickIconCircle, { backgroundColor: '#eff6ff' }]}>
@@ -82,11 +82,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           {/* Card Favoritos */}
           <TouchableOpacity
             style={[styles.quickCard, { borderColor: '#ec4899' }]}
-            onPress={() =>{}
-              // navigation.navigate('Productos', {
-              //   screen: 'ProductsTabs',
-              //   params: { screen: 'FavoritesTab' },
-              // })
+            onPress={() =>
+              navigation.navigate('Productos', {
+                screen: 'ProductsTabs',
+                params: { screen: 'FavoritesTab' },
+              })
             }
           >
             <View style={[styles.quickIconCircle, { backgroundColor: '#fdf2f8' }]}>
@@ -99,11 +99,11 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
           {/* Card Ofertas */}
           <TouchableOpacity
             style={[styles.quickCard, { borderColor: '#f59e0b' }]}
-            onPress={() =>{}
-              // navigation.navigate('Productos', {
-              //   screen: 'ProductsTabs',
-              //   params: { screen: 'OffersTab' },
-              // })
+            onPress={() =>
+              navigation.navigate('Productos', {
+                screen: 'ProductsTabs',
+                params: { screen: 'OffersTab' },
+              })
             }
           >
             <View style={[styles.quickIconCircle, { backgroundColor: '#fffbeb' }]}>
